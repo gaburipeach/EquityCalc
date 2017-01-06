@@ -41,7 +41,7 @@ class Showdown(object):
 
         """
         combo_values = self.retrieve_values(combo)
-        combo_values.sort() #WHOOO
+        combo_values.sort() #WHOO
         for card in combo_values:
             if combo_values.count(card) == 2:
                 combo_values.remove(card)
