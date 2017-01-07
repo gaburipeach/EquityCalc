@@ -57,4 +57,4 @@ class Player(object):
     def __init__(self, cards):
         self.cards = cards
         self.result = Result.loss
-        self.best = [BoardScore.high_card, None, None, 8]
+        self.best = [BoardScore.high_card, 0, 0, 0, 0, 0]

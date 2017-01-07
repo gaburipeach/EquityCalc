@@ -262,9 +262,11 @@ class Showdown(object):
                 best_hands.append((participant, current_hand))
                 continue
             for i in range(6):
-                if current_hand[i] >= best_hands[0][1][i]:
+                if current_hand[i] > best_hands[0][1][i]:
                     best_hands = [(participant, current_hand)]
                     break
+                elif current_hand[i] == best_hands[0][1][i]:
+                    continue
                 else:
                     break
 
