@@ -126,7 +126,7 @@ class Showdown(object):
                 ans.reverse()
                 return True, ans
         # Checks edge case of A2345
-        if set([2, 3, 4, 5, 14]).issubset(set(sorted_values)):
+        if {2, 3, 4, 5, 14}.issubset(set(sorted_values)):
             return True, [5, 4, 3, 2, 14]
         return False, []
 
@@ -271,4 +271,3 @@ class Showdown(object):
         for hand in best_hands:
             self.winners.append(hand[0])
         self.rank = best_hands[0][1]
-

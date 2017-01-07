@@ -1,46 +1,22 @@
 from unittest import TestCase
 import unittest
 from Showdown import Showdown
-import random
 from Player import Player, Card, BoardScore
-import itertools
 
 
 class TestShowdown(TestCase):
-
-    def generate_random_cards(self, num_cards, dead_cards=None):
-        deck = []
-        random_cards = []
-        # Generates entire deck
-        for val in range(2, 15):
-            for suit in range(1, 5):
-                card = Card(val, suit)
-                deck.append(card)
-        # Removes dead cards
-        if dead_cards:
-            for c in dead_cards:
-                deck.remove(c)
-        for i in range(num_cards):
-            draw = random.choice(deck)
-            random_cards.append(draw)
-            deck.remove(draw)
-        return random_cards
-
-    # Generates a random 5-card board for the given players
-    def generate_random_showdown(self, players):
-        pass
 
     def test_is_pair1(self):
         # Test if method detects pair
         gen = [Card(2, 1), Card(3, 1), Card(3, 1), Card(4, 1), Card(5, 1),
                Card(12, 1), Card(9, 4)]
         s = Showdown(None, None)
-        self.assertEqual((True, [3,3,12,9,5]), s.is_pair(gen))
+        self.assertEqual((True, [3, 3, 12, 9, 5]), s.is_pair(gen))
 
     def test_is_pair2(self):
         # Test if method detects no pair
         gen = [Card(2, 1), Card(3, 4), Card(6, 1), Card(4, 2), Card(5, 1),
-               Card(8, 2), Card(10,1)]
+               Card(8, 2), Card(10, 1)]
         s = Showdown(None, None)
         self.assertEqual((False, []), s.is_pair(gen))
 
@@ -110,7 +86,7 @@ class TestShowdown(TestCase):
     def test_is_three_kind3(self):
         # Test if method detects three of a kind from four kind
         gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
-               Card(2,2), Card(3,3)]
+               Card(2, 2), Card(3, 3)]
         s = Showdown(None, None)
         self.assertEqual((True, [14, 14, 14, 14, 12]), s.is_three_kind(gen))
 
@@ -435,7 +411,6 @@ class TestShowdown(TestCase):
         s.find_winners()
         self.assertEqual([players[0], players[1], players[2]], s.winners)
         self.assertEqual([7, 14, 14, 14, 14, 13], s.rank)
-
 
 if __name__ == '__main__':
     unittest.main()
