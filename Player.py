@@ -33,7 +33,7 @@ class Card(object):
         self.suit = suit
 
 
-class BoardScore(Enum):
+class BoardScore:
     """
     Enumeration for board combination scores.
     """

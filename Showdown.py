@@ -1,9 +1,11 @@
 """
 Showdown
 
-Class representing the hierarchy of 5-card combinations at showdown for Texas Hold'em Poker
+Class representing the hierarchy of 5-card combinations at
+showdown for Texas Hold'em Poker.
 
-Takes in an n amount of player's cards and the board state and determines the winner
+Takes in an n amount of player's cards and the board state and determines
+the winner.
 
 """
 from Player import BoardScore
@@ -20,13 +22,14 @@ class Showdown(object):
         # Board is a list of cards
         self.board = board
         # Rank is organized as [Best combo, best 5 combos]
-        self.rank = [BoardScore.high_card, 0, 0, 0, 0, 0]
-        self.winners = None
+        self.rank = []
+        self.winners = []
 
     @classmethod
     def retrieve_values(cls, combo):
         """
-        Take in a list of cards and strips the values. Then returns the list of values in reverse sorted order.
+        Take in a list of cards and strips the values.
+        Then returns the list of values in reverse sorted order.
 
         """
         combo_values = []
@@ -46,7 +49,8 @@ class Showdown(object):
             if combo_values.count(card) == 2:
                 combo_values.remove(card)
                 combo_values.remove(card)
-                return True, [card, card, combo_values[0], combo_values[1], combo_values[2]]
+                return True, [card, card, combo_values[0], combo_values[1],
+                              combo_values[2]]
         return False, []
 
     def is_two_pair(self, combo):
@@ -87,13 +91,15 @@ class Showdown(object):
                 combo_values.remove(card)
                 combo_values.remove(card)
                 combo_values.remove(card)
-                return True, [card, card, card, combo_values[0], combo_values[1]]
+                return True, [card, card, card, combo_values[0],
+                              combo_values[1]]
         return False, []
 
     @classmethod
     def is_sequential(cls, sorted_board):
         """
-        Checks if the sorted board passed in is sequential. Used in is_straight().
+        Checks if the sorted board passed in is sequential.
+        Used in is_straight().
 
         """
         it = (card_val for card_val in sorted_board)
@@ -111,7 +117,8 @@ class Showdown(object):
         else:
             sorted_values = combo
         sorted_values.reverse()
-        # This loop is weird because we account for straight-flush case with the optional argument
+        # This loop is weird because we account for straight-flush case with
+        # the optional argument
         for i in range(len(combo)-5, -1, -1):
             is_seq_straight = self.is_sequential(sorted_values[i:i+5])
             if is_seq_straight:
@@ -165,7 +172,8 @@ class Showdown(object):
         if new_combo_values:
             for card in new_combo_values:
                 if new_combo_values.count(card) >= 2:
-                    return True, [three_of_kind_card, three_of_kind_card, three_of_kind_card, card, card]
+                    return True, [three_of_kind_card, three_of_kind_card,
+                                  three_of_kind_card, card, card]
         return False, []
 
     def is_four_kind(self, combo):
@@ -235,7 +243,7 @@ class Showdown(object):
         if current_hand[0]:
             best = [BoardScore.pair] + current_hand[1]
             return best
-        # If board does not contain any of the above hands, then find the best high-card combination
+        # Find the best high-card combination
         high_card_values = self.retrieve_values(participant.cards + self.board)
         best[1:] = high_card_values[:5]
         return best
@@ -243,10 +251,24 @@ class Showdown(object):
     def find_winners(self):
         """
         Find the player with the best hand.
-        Updates rank variable to hold the best hand and the winners list with the winning player.
+        Updates rank variable to hold the best hand and the winners list
+        with the winning player.
 
         """
-        best_hands = []
+        best_hands = [(None, [0, 0, 0, 0, 0, 0])]
         for participant in self.players:
-            best_hands.append(participant, self.find_best(participant))
+            current_hand = self.find_best(participant)
+            if set(current_hand).issubset(best_hands[0][1]):
+                best_hands.append((participant, current_hand))
+                continue
+            for i in range(6):
+                if current_hand[i] >= best_hands[0][1][i]:
+                    best_hands = [(participant, current_hand)]
+                    break
+                else:
+                    break
+
+        for hand in best_hands:
+            self.winners.append(hand[0])
+        self.rank = best_hands[0][1]
 
