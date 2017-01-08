@@ -10,7 +10,7 @@ class TestSimulator(TestCase):
         players = [Player([Card(14, 1), Card(13, 2)]), Player([Card(12, 1),
                                                                Card(12, 2)])]
         a,b = s.generate_random_showdown(players)
-        self.assertEqual(True, a >= 0 and b >= 0)
+        self.assertEqual(True, a, b)
 
 if __name__ == '__main__':
     unittest.main()

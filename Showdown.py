@@ -321,7 +321,7 @@ class Showdown(object):
             best = [BoardScore.pair] + current_hand[1]
             return best
         # Find the best high-card combination
-        high_card_values = self.retrieve_values(participant.cards + self.board)
+        high_card_values = [card.value for card in combo]
         best[1:] = high_card_values[:5]
         return best
 

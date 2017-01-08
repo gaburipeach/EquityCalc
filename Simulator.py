@@ -38,5 +38,6 @@ class Simulator(object):
             for winner in s.winners:
                 winner_tally[players.index(winner)] += 1
         split = (sum(winner_tally) - simulations)/len(winner_tally)
-        winner_tally = [winner_tally[i] - split for i in winner_tally]
+        winner_tally = [(winner_tally[i] - split)/simulations for i in range(len(
+            winner_tally))]
         return winner_tally
