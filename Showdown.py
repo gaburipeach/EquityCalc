@@ -143,17 +143,20 @@ class Showdown(object):
         return False, []
 
     @classmethod
-    def is_sequential(cls, sorted_board):
+    def is_sequential(cls, sorted_board, val):
         """
         Checks if the sorted board passed in is sequential.
         Used in is_straight().
 
         """
-        it = (card.value for card in sorted_board)
+        if val:
+            it = (card for card in sorted_board)
+        else:
+            it = (card.value for card in sorted_board)
         first = next(it)
         return all(first-a == b for a, b in enumerate(it, 1))
 
-    def is_straight(self, combo):
+    def is_straight(self, combo, straight_flush=None):
         """
         Checks if 5-card combo contains a straight.
         Returns the best 5-card combination with a straight if so.
@@ -177,14 +180,20 @@ class Showdown(object):
         #     return True, [5, 4, 3, 2, 14]
         # return False, []
 
-        size = len(combo)-5
+        size = len(combo)-4
         for i in range(size):
-            is_seq_straight = self.is_sequential(combo[i:i+5])
+            is_seq_straight = self.is_sequential(combo[i:i+5], straight_flush)
             if is_seq_straight:
-                ans = [card.value for card in combo[i:i+5]]
+                if straight_flush:
+                    ans = [card for card in combo[i:i+5]]
+                else:
+                    ans = [card.value for card in combo[i:i+5]]
                 return True, ans
         # Checks edge case of A2345
-        cards = [card.value for card in combo]
+        if not straight_flush:
+            cards = [card.value for card in combo]
+        else:
+            cards = [card for card in combo]
         if {2, 3, 4, 5, 14}.issubset(set(cards)):
             return True, [5, 4, 3, 2, 14]
         return False, []

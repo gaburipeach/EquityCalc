@@ -210,6 +210,7 @@ class TestShowdown(TestCase):
         gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
                Card(2, 2), Card(3, 3)]
         s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
         self.assertEqual((False, []), s.is_straight_flush(gen))
 
     def test_is_straight_flush2(self):
@@ -217,6 +218,7 @@ class TestShowdown(TestCase):
         gen = [Card(14, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
                Card(2, 1), Card(2, 2)]
         s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
         self.assertEqual((True, [14, 13, 12, 11, 10]),
                          s.is_straight_flush(gen))
 
@@ -225,6 +227,7 @@ class TestShowdown(TestCase):
         gen = [Card(9, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
                Card(14, 3), Card(2, 2)]
         s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
         self.assertEqual((True, [14, 13, 12, 11, 10]),
                          s.is_straight_flush(gen))
 
@@ -233,8 +236,9 @@ class TestShowdown(TestCase):
         gen = [Card(9, 3), Card(11, 4), Card(12, 3), Card(13, 3), Card(10, 3),
                Card(14, 3), Card(2, 2)]
         s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
         self.assertEqual((False, []), s.is_straight_flush(gen))
-    
+
     # def test_is_straight_flush5(self):
     #     # Test if method detects wheel straight flush
     #     gen = [Card(5, 3), Card(4, 3), Card(14, 3), Card(13, 3), Card(2, 3),
