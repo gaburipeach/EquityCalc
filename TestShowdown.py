@@ -85,7 +85,7 @@ class TestShowdown(TestCase):
         gen = s.retrieve_values(gen)
         self.assertEqual((True, [14, 14, 8, 8, 3]), s.is_two_pair(gen))
 
-    def test_is_three_kind(self):
+    def test_is_three_kind1(self):
         # Test if method detects three of a kind
         gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(13, 4), Card(12, 3),
                Card(2, 2), Card(3, 3)]
@@ -111,11 +111,11 @@ class TestShowdown(TestCase):
 
     def test_is_three_kind4(self):
         # Test if method detects three of a kind when there are 2 higher card
-        gen = [Card(12, 3), Card(12, 2), Card(12, 1), Card(14, 4), Card(13, 3),
+        gen = [Card(2, 3), Card(12, 2), Card(2, 1), Card(14, 4), Card(13, 3),
                Card(2, 2), Card(3, 3)]
         s = Showdown(None, None)
         gen = s.retrieve_values(gen)
-        self.assertEqual((True, [12, 12, 12, 14, 13]), s.is_three_kind(gen))
+        self.assertEqual((True, [2, 2, 2, 14, 13]), s.is_three_kind(gen))
 
     def test_is_straight1(self):
         # Test if method detects straight
@@ -189,50 +189,52 @@ class TestShowdown(TestCase):
         gen = s.retrieve_values(gen)
         self.assertEqual((True, [14, 14, 14, 5, 5]), s.is_full_house(gen))
 
-    # def test_is_four_kind(self):
-    #     # Test if method detects four of a kind
-    #     gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
-    #            Card(2, 2), Card(3, 3)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((True, [14, 14, 14, 14, 12]), s.is_four_kind(gen))
-    #
-    # def test_is_four_kind2(self):
-    #     # Test if method detects no four of a kind
-    #     gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(13, 4), Card(12, 3),
-    #            Card(2, 1), Card(2, 2)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((False, []), s.is_four_kind(gen))
-    #
-    # def test_is_straight_flush1(self):
-    #     # Test if method detects no straight flush
-    #     gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
-    #            Card(2, 2), Card(3, 3)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((False, []), s.is_straight_flush(gen))
-    #
-    # def test_is_straight_flush2(self):
-    #     # Test if method detects straight flush
-    #     gen = [Card(14, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
-    #            Card(2, 1), Card(2, 2)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((True, [14, 13, 12, 11, 10]),
-    #                      s.is_straight_flush(gen))
-    #
-    # def test_is_straight_flush3(self):
-    #     # Test if method detects straight flush with 6 straight flush
-    #     gen = [Card(9, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
-    #            Card(14, 3), Card(2, 2)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((True, [14, 13, 12, 11, 10]),
-    #                      s.is_straight_flush(gen))
-    #
-    # def test_is_straight_flush4(self):
-    #     # Test if method if no straight flush when straight and flush present
-    #     gen = [Card(9, 3), Card(11, 4), Card(12, 3), Card(13, 3), Card(10, 3),
-    #            Card(14, 3), Card(2, 2)]
-    #     s = Showdown(None, None)
-    #     self.assertEqual((False, []), s.is_straight_flush(gen))
-    #
+    def test_is_four_kind(self):
+        # Test if method detects four of a kind
+        gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
+               Card(2, 2), Card(3, 3)]
+        s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
+        self.assertEqual((True, [14, 14, 14, 14, 12]), s.is_four_kind(gen))
+
+    def test_is_four_kind2(self):
+        # Test if method detects no four of a kind
+        gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(13, 4), Card(12, 3),
+               Card(2, 1), Card(2, 2)]
+        s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
+        self.assertEqual((False, []), s.is_four_kind(gen))
+
+    def test_is_straight_flush1(self):
+        # Test if method detects no straight flush
+        gen = [Card(14, 3), Card(14, 2), Card(14, 1), Card(14, 4), Card(12, 3),
+               Card(2, 2), Card(3, 3)]
+        s = Showdown(None, None)
+        self.assertEqual((False, []), s.is_straight_flush(gen))
+
+    def test_is_straight_flush2(self):
+        # Test if method detects straight flush
+        gen = [Card(14, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
+               Card(2, 1), Card(2, 2)]
+        s = Showdown(None, None)
+        self.assertEqual((True, [14, 13, 12, 11, 10]),
+                         s.is_straight_flush(gen))
+
+    def test_is_straight_flush3(self):
+        # Test if method detects straight flush with 6 straight flush
+        gen = [Card(9, 3), Card(11, 3), Card(12, 3), Card(13, 3), Card(10, 3),
+               Card(14, 3), Card(2, 2)]
+        s = Showdown(None, None)
+        self.assertEqual((True, [14, 13, 12, 11, 10]),
+                         s.is_straight_flush(gen))
+
+    def test_is_straight_flush4(self):
+        # Test if method if no straight flush when straight and flush present
+        gen = [Card(9, 3), Card(11, 4), Card(12, 3), Card(13, 3), Card(10, 3),
+               Card(14, 3), Card(2, 2)]
+        s = Showdown(None, None)
+        self.assertEqual((False, []), s.is_straight_flush(gen))
+    
     # def test_is_straight_flush5(self):
     #     # Test if method detects wheel straight flush
     #     gen = [Card(5, 3), Card(4, 3), Card(14, 3), Card(13, 3), Card(2, 3),

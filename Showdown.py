@@ -233,18 +233,25 @@ class Showdown(object):
 
         three_of_kind = None
         pair = None
-        f_pair = None
+        # f_pair = None
         size = len(combo)
         i = 0
         while i < size-1:
-            if pair == combo[i+1].value and not three_of_kind:
-                three_of_kind = pair
-            if combo[i].value == combo[i+1].value:
-                if not three_of_kind or three_of_kind == f_pair:
-                    f_pair = pair
+            # if pair == combo[i+1].value and not three_of_kind:
+            #     three_of_kind = pair
+            # if combo[i].value == combo[i+1].value:
+            #     if not three_of_kind or three_of_kind == f_pair:
+            #         f_pair = pair
+            #     pair = combo[i].value
+            # if f_pair and three_of_kind and (f_pair != three_of_kind):
+            #    return True, [three_of_kind, three_of_kind, three_of_kind, f_pair, f_pair]
+            if i < size-2:
+                if not three_of_kind and combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value:
+                    three_of_kind = combo[i].value
+            if (not pair or pair == three_of_kind) and combo[i].value == combo[i+1].value:
                 pair = combo[i].value
-            if f_pair and three_of_kind and (f_pair != three_of_kind):
-                return True, [three_of_kind, three_of_kind, three_of_kind, f_pair, f_pair]
+            if pair != None and three_of_kind != None and pair != three_of_kind:
+                return True, [three_of_kind, three_of_kind, three_of_kind, pair, pair]
             i+=1
         return False, []
 
@@ -254,14 +261,25 @@ class Showdown(object):
         Returns the best 5-card combination with a four of a kind if so.
 
         """
-        combo_values = self.retrieve_values(combo)
-        for card in combo_values:
-            if combo_values.count(card) == 4:
-                combo_values.remove(card)
-                combo_values.remove(card)
-                combo_values.remove(card)
-                combo_values.remove(card)
-                return True, [card, card, card, card, combo_values[0]]
+        # combo_values = self.retrieve_values(combo)
+        # for card in combo_values:
+        #     if combo_values.count(card) == 4:
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         return True, [card, card, card, card, combo_values[0]]
+        # return False, []
+
+        size = len(combo)
+        i = 0
+        while i < size-3:
+            if combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value and combo[i+2].value == combo[i+3].value:
+                top = combo[0].value
+                if i == 0:
+                    top = combo[4].value
+                return True, [combo[i].value, combo[i+1].value, combo[i+2].value, combo[i+3].value, top]
+            i+=1
         return False, []
 
     def is_straight_flush(self, combo):
