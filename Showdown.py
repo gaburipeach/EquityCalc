@@ -204,6 +204,8 @@ class Showdown(object):
         Returns the best 5-card combination with a flush if so.
 
         """
+        #straight_flush handles straight_flush case to return all cards
+        # instead of 7
         suit_count = [[], [], [], []]
         for card in combo:
             suit_count[card.suit-1].append(card.value) if not straight_flush\
