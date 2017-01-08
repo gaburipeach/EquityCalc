@@ -32,11 +32,12 @@ class Showdown(object):
         Then returns the list of values in reverse sorted order.
 
         """
-        combo_values = []
-        for card in combo:
-            combo_values.append(card.value)
-        combo_values.sort(reverse=True)
-        return combo_values
+        # combo_values = []
+        combo.sort(key=lambda x: x.value, reverse=True)
+        # for card in combo:
+        #     combo_values.append(card.value)
+        # combo_values.sort(reverse=True)
+        return combo
 
     def is_pair(self, combo):
         """
@@ -44,13 +45,24 @@ class Showdown(object):
         Returns the best 5-card combination with a pair if so.
 
         """
-        combo_values = self.retrieve_values(combo)
-        for card in combo_values:
-            if combo_values.count(card) == 2:
-                combo_values.remove(card)
-                combo_values.remove(card)
-                return True, [card, card, combo_values[0], combo_values[1],
-                              combo_values[2]]
+        # combo_values = self.retrieve_values(combo)
+        # for card in combo_values:
+        #     if combo_values.count(card) == 2:
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         return True, [card, card, combo_values[0], combo_values[1],
+        #                       combo_values[2]]
+        # return False, []
+
+        size = len(combo)
+        i = 0
+        while i < size-1:
+            if combo[i].value == combo[i+1].value:
+                j = min(i, 3)
+                left = [card.value for card in combo[0:j]]
+                right = [card.value for card in combo[j+2:max(j+2, 5)]]
+                return True, [combo[i].value, combo[i+1].value] + left + right
+            i+=1
         return False, []
 
     def is_two_pair(self, combo):
@@ -59,24 +71,48 @@ class Showdown(object):
         Returns the best 5-card combination with a two pair if so.
 
         """
-        combo_values = self.retrieve_values(combo)
+        # combo_values = self.retrieve_values(combo)
+        # pair1 = None
+        # pair2 = None
+        # for card in combo_values:
+        #     if combo_values.count(card) >= 2:
+        #         # Removing while iterating is ok here because there are only 5
+        #         # cards and by removing we skip 1 iteration, so max there will
+        #         # only be 3 cards left and it doesn't matter if we skip 1
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         if not pair1:
+        #             pair1 = card
+        #         else:
+        #             pair2 = card
+        #         if pair2:
+        #             if pair1 < pair2:
+        #                 pair1, pair2 = pair2, pair1
+        #             return True, [pair1, pair1, pair2, pair2, combo_values[0]]
+        # return False, []
+
         pair1 = None
         pair2 = None
-        for card in combo_values:
-            if combo_values.count(card) >= 2:
+        size = len(combo)
+        i = 0
+        while i < size-1:
+            if combo[i].value == combo[i+1].value:
                 # Removing while iterating is ok here because there are only 5
                 # cards and by removing we skip 1 iteration, so max there will
                 # only be 3 cards left and it doesn't matter if we skip 1
-                combo_values.remove(card)
-                combo_values.remove(card)
                 if not pair1:
-                    pair1 = card
+                    pair1 = i+1
                 else:
-                    pair2 = card
+                    pair2 = i
                 if pair2:
-                    if pair1 < pair2:
-                        pair1, pair2 = pair2, pair1
-                    return True, [pair1, pair1, pair2, pair2, combo_values[0]]
+                    k = 0
+                    if pair1 == 1:
+                        k += 2
+                        if pair2 == 2:
+                            k += 2
+                    return True, [combo[pair1].value, combo[pair1].value, combo[pair2].value, combo[pair2].value, combo[k].value]
+                i += 1
+            i+=1
         return False, []
 
     def is_three_kind(self, combo):
@@ -85,14 +121,25 @@ class Showdown(object):
         Returns the best 5-card combination with a three of a kind if so.
 
         """
-        combo_values = self.retrieve_values(combo)
-        for card in combo_values:
-            if combo_values.count(card) >= 3:
-                combo_values.remove(card)
-                combo_values.remove(card)
-                combo_values.remove(card)
-                return True, [card, card, card, combo_values[0],
-                              combo_values[1]]
+        # combo_values = self.retrieve_values(combo)
+        # for card in combo_values:
+        #     if combo_values.count(card) >= 3:
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         return True, [card, card, card, combo_values[0],
+        #                       combo_values[1]]
+        # return False, []
+
+        size = len(combo)
+        i = 0
+        while i < size-2:
+            if combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value:
+                j = min(i, 2)
+                left = [card.value for card in combo[0:j]]
+                right = [card.value for card in combo[j+3:max(j+3, 5)]]
+                return True, [combo[i].value, combo[i+1].value, combo[i+2].value] + left + right
+            i+=1
         return False, []
 
     @classmethod
@@ -102,31 +149,43 @@ class Showdown(object):
         Used in is_straight().
 
         """
-        it = (card_val for card_val in sorted_board)
+        it = (card.value for card in sorted_board)
         first = next(it)
-        return all(a == b for a, b in enumerate(it, first + 1))
+        return all(first-a == b for a, b in enumerate(it, 1))
 
-    def is_straight(self, combo, straight_flush=None):
+    def is_straight(self, combo):
         """
         Checks if 5-card combo contains a straight.
         Returns the best 5-card combination with a straight if so.
 
         """
-        if not straight_flush:
-            sorted_values = self.retrieve_values(combo)
-        else:
-            sorted_values = combo
-        sorted_values.reverse()
-        # This loop is weird because we account for straight-flush case with
-        # the optional argument
-        for i in range(len(combo)-5, -1, -1):
-            is_seq_straight = self.is_sequential(sorted_values[i:i+5])
+        # if not straight_flush:
+        #     sorted_values = self.retrieve_values(combo)
+        # else:
+        #     sorted_values = combo
+        # sorted_values.reverse()
+        # # This loop is weird because we account for straight-flush case with
+        # # the optional argument
+        # for i in range(len(combo)-5, -1, -1):
+        #     is_seq_straight = self.is_sequential(sorted_values[i:i+5])
+        #     if is_seq_straight:
+        #         ans = sorted_values[i:i+5]
+        #         ans.reverse()
+        #         return True, ans
+        # # Checks edge case of A2345
+        # if {2, 3, 4, 5, 14}.issubset(set(sorted_values)):
+        #     return True, [5, 4, 3, 2, 14]
+        # return False, []
+
+        size = len(combo)-5
+        for i in range(size):
+            is_seq_straight = self.is_sequential(combo[i:i+5])
             if is_seq_straight:
-                ans = sorted_values[i:i+5]
-                ans.reverse()
+                ans = [card.value for card in combo[i:i+5]]
                 return True, ans
         # Checks edge case of A2345
-        if {2, 3, 4, 5, 14}.issubset(set(sorted_values)):
+        cards = [card.value for card in combo]
+        if {2, 3, 4, 5, 14}.issubset(set(cards)):
             return True, [5, 4, 3, 2, 14]
         return False, []
 
@@ -136,21 +195,17 @@ class Showdown(object):
         Returns the best 5-card combination with a flush if so.
 
         """
-        suit_count = [0, 0, 0, 0]
+        suit_count = [[], [], [], []]
         for card in combo:
-            suit_count[card.suit-1] += 1
+            suit_count[card.suit-1].append(card.value)
         f_suit = None
         for i in range(4):
-            if suit_count[i] >= 5:
+            if len(suit_count[i]) >= 5:
                 f_suit = i+1
+                break
         if not f_suit:
             return False, []
-        ans = []
-        for card in combo:
-            if card.suit == f_suit:
-                ans.append(card)
-        ans = self.retrieve_values(ans)
-        return True, ans[:min([num, len(ans)])]
+        return True, suit_count[f_suit-1][:min(num, len(suit_count[f_suit-1]))]
 
     def is_full_house(self, combo):
         """
@@ -158,22 +213,39 @@ class Showdown(object):
         Returns the best 5-card combination with a full house if so.
 
         """
-        combo_values = self.retrieve_values(combo)
-        new_combo_values = None
-        three_of_kind_card = None
-        for card in combo_values:
-            if combo_values.count(card) == 3:
-                combo_values.remove(card)
-                combo_values.remove(card)
-                combo_values.remove(card)
-                three_of_kind_card = card
-                new_combo_values = combo_values[:]
-                break
-        if new_combo_values:
-            for card in new_combo_values:
-                if new_combo_values.count(card) >= 2:
-                    return True, [three_of_kind_card, three_of_kind_card,
-                                  three_of_kind_card, card, card]
+        # combo_values = self.retrieve_values(combo)
+        # new_combo_values = None
+        # three_of_kind_card = None
+        # for card in combo_values:
+        #     if combo_values.count(card) == 3:
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         combo_values.remove(card)
+        #         three_of_kind_card = card
+        #         new_combo_values = combo_values[:]
+        #         break
+        # if new_combo_values:
+        #     for card in new_combo_values:
+        #         if new_combo_values.count(card) >= 2:
+        #             return True, [three_of_kind_card, three_of_kind_card,
+        #                           three_of_kind_card, card, card]
+        # return False, []
+
+        three_of_kind = None
+        pair = None
+        f_pair = None
+        size = len(combo)
+        i = 0
+        while i < size-1:
+            if pair == combo[i+1].value and not three_of_kind:
+                three_of_kind = pair
+            if combo[i].value == combo[i+1].value:
+                if not three_of_kind or three_of_kind == f_pair:
+                    f_pair = pair
+                pair = combo[i].value
+            if f_pair and three_of_kind and (f_pair != three_of_kind):
+                return True, [three_of_kind, three_of_kind, three_of_kind, f_pair, f_pair]
+            i+=1
         return False, []
 
     def is_four_kind(self, combo):
@@ -211,6 +283,7 @@ class Showdown(object):
         # best represents [BoardScore, Best 5 cards]
         best = [BoardScore.high_card, 0, 0, 0, 0, 0]
         combo = participant.cards + self.board
+        combo = self.retrieve_values(combo)
         current_hand = self.is_straight_flush(combo)
         if current_hand[0]:
             best = [BoardScore.straight_flush] + current_hand[1]

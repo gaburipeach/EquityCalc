@@ -36,4 +36,5 @@ class Simulator(object):
             s.find_winners()
             for winner in s.winners:
                 winner_tally[players.index(winner)] += 1
+        print(winner_tally)
         return winner_tally
