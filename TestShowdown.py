@@ -247,6 +247,15 @@ class TestShowdown(TestCase):
         gen = s.retrieve_values(gen)
         self.assertEqual((True, [5, 4, 3, 2, 14]), s.is_straight_flush(gen))
 
+    def test_is_straight_flush6(self):
+        # Test if method detects straight-flush from 7
+        gen = [Card(5, 3), Card(4, 3), Card(7, 3), Card(6, 3),
+               Card(2, 3), Card(3, 3), Card(2, 2)]
+        s = Showdown(None, None)
+        gen = s.retrieve_values(gen)
+        self.assertEqual((True, [7, 6, 5, 4, 3]),
+                         s.is_straight_flush(gen))
+
     # Tests of find_best
 
     # def test_find_best_high_card(self):
