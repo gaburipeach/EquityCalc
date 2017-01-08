@@ -1,12 +1,9 @@
 """
 Showdown
-
 Class representing the hierarchy of 5-card combinations at
 showdown for Texas Hold'em Poker.
-
 Takes in an n amount of player's cards and the board state and determines
 the winner.
-
 """
 from Player import BoardScore
 
@@ -14,7 +11,6 @@ from Player import BoardScore
 class Showdown(object):
     """
     Rank class that calculates final showdown rank.
-
     """
     def __init__(self, players, board):
         # Players is a list of players
@@ -30,7 +26,6 @@ class Showdown(object):
         """
         Take in a list of cards and strips the values.
         Then returns the list of values in reverse sorted order.
-
         """
         # combo_values = []
         combo.sort(key=lambda x: x.value, reverse=True)
@@ -43,7 +38,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains a pair.
         Returns the best 5-card combination with a pair if so.
-
         """
         # combo_values = self.retrieve_values(combo)
         # for card in combo_values:
@@ -69,7 +63,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains two pairs.
         Returns the best 5-card combination with a two pair if so.
-
         """
         # combo_values = self.retrieve_values(combo)
         # pair1 = None
@@ -119,7 +112,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains three of a kind.
         Returns the best 5-card combination with a three of a kind if so.
-
         """
         # combo_values = self.retrieve_values(combo)
         # for card in combo_values:
@@ -143,24 +135,19 @@ class Showdown(object):
         return False, []
 
     @classmethod
-    def is_sequential(cls, sorted_board, val):
+    def is_sequential(cls, sorted_board):
         """
         Checks if the sorted board passed in is sequential.
         Used in is_straight().
-
         """
-        if val:
-            it = (card for card in sorted_board)
-        else:
-            it = (card.value for card in sorted_board)
+        it = (card.value for card in sorted_board)
         first = next(it)
         return all(first-a == b for a, b in enumerate(it, 1))
 
-    def is_straight(self, combo, straight_flush=None):
+    def is_straight(self, combo):
         """
         Checks if 5-card combo contains a straight.
         Returns the best 5-card combination with a straight if so.
-
         """
         # if not straight_flush:
         #     sorted_values = self.retrieve_values(combo)
@@ -182,18 +169,12 @@ class Showdown(object):
 
         size = len(combo)-4
         for i in range(size):
-            is_seq_straight = self.is_sequential(combo[i:i+5], straight_flush)
+            is_seq_straight = self.is_sequential(combo[i:i+5])
             if is_seq_straight:
-                if straight_flush:
-                    ans = [card for card in combo[i:i+5]]
-                else:
-                    ans = [card.value for card in combo[i:i+5]]
+                ans = [card.value for card in combo[i:i+5]]
                 return True, ans
         # Checks edge case of A2345
-        if not straight_flush:
-            cards = [card.value for card in combo]
-        else:
-            cards = [card for card in combo]
+        cards = [card.value for card in combo]
         if {2, 3, 4, 5, 14}.issubset(set(cards)):
             return True, [5, 4, 3, 2, 14]
         return False, []
@@ -202,10 +183,7 @@ class Showdown(object):
         """
         Checks if 5-card combo contains a flush
         Returns the best 5-card combination with a flush if so.
-
         """
-        #straight_flush handles straight_flush case to return all cards
-        # instead of 7
         suit_count = [[], [], [], []]
         for card in combo:
             suit_count[card.suit-1].append(card.value) if not straight_flush\
@@ -223,7 +201,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains a full house.
         Returns the best 5-card combination with a full house if so.
-
         """
         # combo_values = self.retrieve_values(combo)
         # new_combo_values = None
@@ -272,7 +249,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains four of a kind.
         Returns the best 5-card combination with a four of a kind if so.
-
         """
         # combo_values = self.retrieve_values(combo)
         # for card in combo_values:
@@ -298,7 +274,6 @@ class Showdown(object):
         """
         Finds if five-card combo contains a straight flush.
         Returns the best 5-card combination with a pair if so.
-
         """
         flush_list = self.is_flush(combo, 7, True)
         if flush_list[0]:
@@ -308,7 +283,6 @@ class Showdown(object):
     def find_best(self, participant):
         """
         Finds the best five-card combination for each player.
-
         """
         # best represents [BoardScore, Best 5 cards]
         best = [BoardScore.high_card, 0, 0, 0, 0, 0]
@@ -356,7 +330,6 @@ class Showdown(object):
         Find the player with the best hand.
         Updates rank variable to hold the best hand and the winners list
         with the winning player.
-
         """
         best_hands = [(None, [0, 0, 0, 0, 0, 0])]
         for participant in self.players:
