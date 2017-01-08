@@ -177,7 +177,7 @@ class Showdown(object):
         #     return True, [5, 4, 3, 2, 14]
         # return False, []
 
-        size = len(combo)-5
+        size = len(combo)-4
         for i in range(size):
             is_seq_straight = self.is_sequential(combo[i:i+5])
             if is_seq_straight:
@@ -189,7 +189,7 @@ class Showdown(object):
             return True, [5, 4, 3, 2, 14]
         return False, []
 
-    def is_flush(self, combo, num=5):
+    def is_flush(self, combo, num=5, straight_flush=False):
         """
         Checks if 5-card combo contains a flush
         Returns the best 5-card combination with a flush if so.
@@ -197,7 +197,8 @@ class Showdown(object):
         """
         suit_count = [[], [], [], []]
         for card in combo:
-            suit_count[card.suit-1].append(card.value)
+            suit_count[card.suit-1].append(card.value) if not straight_flush\
+                else suit_count[card.suit-1].append(card)
         f_suit = None
         for i in range(4):
             if len(suit_count[i]) >= 5:
@@ -250,7 +251,8 @@ class Showdown(object):
                     three_of_kind = combo[i].value
             if (not pair or pair == three_of_kind) and combo[i].value == combo[i+1].value:
                 pair = combo[i].value
-            if pair != None and three_of_kind != None and pair != three_of_kind:
+            if pair is not None and three_of_kind is not None and pair != \
+                    three_of_kind:
                 return True, [three_of_kind, three_of_kind, three_of_kind, pair, pair]
             i+=1
         return False, []
@@ -274,12 +276,11 @@ class Showdown(object):
         size = len(combo)
         i = 0
         while i < size-3:
-            if combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value and combo[i+2].value == combo[i+3].value:
-                top = combo[0].value
-                if i == 0:
-                    top = combo[4].value
-                return True, [combo[i].value, combo[i+1].value, combo[i+2].value, combo[i+3].value, top]
-            i+=1
+            if combo[i].value == combo[i+3].value:
+                top = combo[4].value if i == 0 else combo[0].value
+                four_kind = combo[i].value
+                return True, [four_kind, four_kind, four_kind, four_kind, top]
+            i += 1
         return False, []
 
     def is_straight_flush(self, combo):
@@ -288,9 +289,9 @@ class Showdown(object):
         Returns the best 5-card combination with a pair if so.
 
         """
-        flush_list = self.is_flush(combo, 7)[1]
-        if len(flush_list) >= 5:
-            return self.is_straight(flush_list, 1)
+        flush_list = self.is_flush(combo, 7, True)
+        if flush_list[0]:
+            return self.is_straight(flush_list[1])
         return False, []
 
     def find_best(self, participant):
