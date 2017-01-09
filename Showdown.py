@@ -167,17 +167,40 @@ class Showdown(object):
         #     return True, [5, 4, 3, 2, 14]
         # return False, []
 
-        size = len(combo)-4
-        for i in range(size):
-            is_seq_straight = self.is_sequential(combo[i:i+5])
-            if is_seq_straight:
-                ans = [card.value for card in combo[i:i+5]]
-                return True, ans
+        # size = len(combo)-4
+        # for i in range(size):
+        #     is_seq_straight = self.is_sequential(combo[i:i+5])
+        #     if is_seq_straight:
+        #         ans = [card.value for card in combo[i:i+5]]
+        #         return True, ans
+        # # Checks edge case of A2345
+        # cards = [card.value for card in combo]
+        # if {2, 3, 4, 5, 14}.issubset(set(cards)):
+        #     return True, [5, 4, 3, 2, 14]
+        # return False, []
+
+        if self.is_sequential(combo[2:5]):
+            run = 3
+            size = len(combo)-5
+            if combo[1].value-1 == combo[2].value:
+                run += 1
+                if combo[0].value-1 == combo[1].value:
+                    return True, [card.value for card in combo[0:5]]
+            for i in range(size):
+                i += 1
+                if combo[4].value == combo[4+i].value+i:
+                    run += 1
+                else:
+                    break
+                if run >= 5:
+                    ans = [card.value for card in combo[i:i+5]]
+                    return True, ans
         # Checks edge case of A2345
         cards = [card.value for card in combo]
         if {2, 3, 4, 5, 14}.issubset(set(cards)):
             return True, [5, 4, 3, 2, 14]
         return False, []
+
 
     def is_flush(self, combo, num=5, straight_flush=False):
         """
