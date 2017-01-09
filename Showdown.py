@@ -288,36 +288,73 @@ class Showdown(object):
         best = [BoardScore.high_card, 0, 0, 0, 0, 0]
         combo = participant.cards + self.board
         combo = self.retrieve_values(combo)
-        current_hand = self.is_straight_flush(combo)
+        # current_hand = self.is_straight_flush(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.straight_flush] + current_hand[1]
+        #     return best
+        # current_hand = self.is_four_kind(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.four_kind] + current_hand[1]
+        #     return best
+        # current_hand = self.is_full_house(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.full_house] + current_hand[1]
+        #     return best
+        # current_hand = self.is_flush(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.flush] + current_hand[1]
+        #     return best
+        current_hand = self.is_flush(combo, 7, True)
         if current_hand[0]:
-            best = [BoardScore.straight_flush] + current_hand[1]
-            return best
-        current_hand = self.is_four_kind(combo)
-        if current_hand[0]:
-            best = [BoardScore.four_kind] + current_hand[1]
-            return best
-        current_hand = self.is_full_house(combo)
-        if current_hand[0]:
-            best = [BoardScore.full_house] + current_hand[1]
-            return best
-        current_hand = self.is_flush(combo)
-        if current_hand[0]:
-            best = [BoardScore.flush] + current_hand[1]
-            return best
+            new_hand = self.is_straight(current_hand[1])
+            if new_hand[0]:
+                best = [BoardScore.straight_flush] + new_hand[1]
+                return best
+            else:
+                new_hand2 = self.is_four_kind(combo)
+                if new_hand2[0]:
+                    best = [BoardScore.four_kind] + new_hand2[1]
+                    return best
+                new_hand2 = self.is_full_house(combo)
+                if new_hand2[0]:
+                    best = [BoardScore.full_house] + new_hand2[1]
+                    return best
+                best = [BoardScore.flush] + [card.value for card in current_hand[1][:5]]
+                return best
         current_hand = self.is_straight(combo)
         if current_hand[0]:
+            new_hand = self.is_three_kind(combo)
+            if new_hand[0]:
+                best = [BoardScore.three_kind] + new_hand[1]
+                return best
             best = [BoardScore.straight] + current_hand[1]
             return best
-        current_hand = self.is_three_kind(combo)
-        if current_hand[0]:
-            best = [BoardScore.three_kind] + current_hand[1]
-            return best
-        current_hand = self.is_two_pair(combo)
-        if current_hand[0]:
-            best = [BoardScore.two_pair] + current_hand[1]
-            return best
+        # current_hand = self.is_three_kind(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.three_kind] + current_hand[1]
+        #     return best
+        # current_hand = self.is_two_pair(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.two_pair] + current_hand[1]
+        #     return best
         current_hand = self.is_pair(combo)
         if current_hand[0]:
+            new_hand1 = self.is_three_kind(combo)
+            if new_hand1[0]:
+                new_hand2 = self.is_four_kind(combo)
+                if new_hand2[0]:
+                    best = [BoardScore.four_kind] + new_hand2[1]
+                    return best
+                new_hand2 = self.is_full_house(combo)
+                if new_hand2[0]:
+                    best = [BoardScore.full_house] + new_hand2[1]
+                    return best
+                best = [BoardScore.three_kind] + new_hand1[1]
+                return best
+            new_hand1 = self.is_two_pair(combo)
+            if new_hand1[0]:
+                best = [BoardScore.two_pair] + new_hand1[1]
+                return best
             best = [BoardScore.pair] + current_hand[1]
             return best
         # Find the best high-card combination
