@@ -311,6 +311,7 @@ class Showdown(object):
         best = [BoardScore.high_card, 0, 0, 0, 0, 0]
         combo = participant.cards + self.board
         combo = self.retrieve_values(combo)
+
         # current_hand = self.is_straight_flush(combo)
         # if current_hand[0]:
         #     best = [BoardScore.straight_flush] + current_hand[1]
@@ -327,6 +328,23 @@ class Showdown(object):
         # if current_hand[0]:
         #     best = [BoardScore.flush] + current_hand[1]
         #     return best
+        # current_hand = self.is_straight(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.straight] + current_hand[1]
+        #     return best
+        # current_hand = self.is_three_kind(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.three_kind] + current_hand[1]
+        #     return best
+        # current_hand = self.is_two_pair(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.two_pair] + current_hand[1]
+        #     return best
+        # current_hand = self.is_pair(combo)
+        # if current_hand[0]:
+        #     best = [BoardScore.pair] + current_hand[1]
+        #     return best
+
         current_hand = self.is_flush(combo, 7, True)
         if current_hand[0]:
             new_hand = self.is_straight(current_hand[1])
@@ -346,20 +364,8 @@ class Showdown(object):
                 return best
         current_hand = self.is_straight(combo)
         if current_hand[0]:
-            new_hand = self.is_three_kind(combo)
-            if new_hand[0]:
-                best = [BoardScore.three_kind] + new_hand[1]
-                return best
             best = [BoardScore.straight] + current_hand[1]
             return best
-        # current_hand = self.is_three_kind(combo)
-        # if current_hand[0]:
-        #     best = [BoardScore.three_kind] + current_hand[1]
-        #     return best
-        # current_hand = self.is_two_pair(combo)
-        # if current_hand[0]:
-        #     best = [BoardScore.two_pair] + current_hand[1]
-        #     return best
         current_hand = self.is_pair(combo)
         if current_hand[0]:
             new_hand1 = self.is_three_kind(combo)
