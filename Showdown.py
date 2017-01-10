@@ -123,14 +123,27 @@ class Showdown(object):
         #                       combo_values[1]]
         # return False, []
 
+        # size = len(combo)
+        # i = 0
+        # while i < size-2:
+        #     if combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value:
+        #         j = min(i, 2)
+        #         left = [card.value for card in combo[0:j]]
+        #         right = [card.value for card in combo[j+3:max(j+3, 5)]]
+        #         return True, [combo[i].value, combo[i+1].value, combo[i+2].value] + left + right
+        #     i+=1
+        # return False, []
+
         size = len(combo)
         i = 0
         while i < size-2:
-            if combo[i].value == combo[i+1].value and combo[i+1].value == combo[i+2].value:
-                j = min(i, 2)
-                left = [card.value for card in combo[0:j]]
-                right = [card.value for card in combo[j+3:max(j+3, 5)]]
-                return True, [combo[i].value, combo[i+1].value, combo[i+2].value] + left + right
+            if combo[i].value == combo[i+1].value:
+                i += 1
+                if combo[i].value == combo[i+1].value:
+                    j = min(i-1, 2)
+                    left = [card.value for card in combo[0:j]]
+                    right = [card.value for card in combo[j+3:max(j+3, 5)]]
+                    return True, [combo[i].value, combo[i].value, combo[i].value] + left + right
             i+=1
         return False, []
 
