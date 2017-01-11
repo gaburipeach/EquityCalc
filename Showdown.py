@@ -368,14 +368,8 @@ class Showdown(object):
                 best = [BoardScore.straight_flush] + new_hand[1]
                 return best
             else:
-                new_hand2 = self.is_four_kind(combo)
-                if new_hand2[0]:
-                    best = [BoardScore.four_kind] + new_hand2[1]
-                    return best
-                new_hand2 = self.is_full_house(combo)
-                if new_hand2[0]:
-                    best = [BoardScore.full_house] + new_hand2[1]
-                    return best
+                # Impossible to have 4-kind with Flush
+                # Impossible to have Full house with Flush
                 best = [BoardScore.flush] + [card.value for card in current_hand[1][:5]]
                 return best
         current_hand = self.is_straight(combo)
