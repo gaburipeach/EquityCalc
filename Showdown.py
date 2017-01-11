@@ -21,6 +21,9 @@ class Showdown(object):
         self.rank = []
         self.winners = []
 
+    def update_board(self, board):
+        self.board = board
+
     @classmethod
     def retrieve_values(cls, combo):
         """
