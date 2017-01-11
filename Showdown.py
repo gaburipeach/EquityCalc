@@ -410,7 +410,7 @@ class Showdown(object):
         best_hands = [(None, [0, 0, 0, 0, 0, 0])]
         for participant in self.players:
             current_hand = self.find_best(participant)
-            if set(current_hand).issubset(best_hands[0][1]):
+            if current_hand == best_hands[0][1]:
                 best_hands.append((participant, current_hand))
                 continue
             for i in range(6):

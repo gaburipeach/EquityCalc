@@ -27,7 +27,7 @@ class Simulator(object):
     def generate_random_showdown(self, players):
         dead_cards = [card for player in players for card in player.cards]
         winner_tally = [0] * len(players)
-        simulations = 100000
+        simulations = 1000000
         deck = []
         # Generates entire deck
         for val in range(2, 15):
@@ -43,6 +43,9 @@ class Simulator(object):
                 deck.append((card.value, card.suit))
             s = Showdown(players, board)
             s.find_winners()
+            # print([card.value for winner in
+            #        s.winners for card in winner.cards ])
+            # print([(card.value, card.suit) for card in board])
             for winner in s.winners:
                 winner_tally[players.index(winner)] += 1
         split = (sum(winner_tally) - simulations)/len(winner_tally)

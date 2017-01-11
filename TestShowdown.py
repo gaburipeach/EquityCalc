@@ -475,5 +475,29 @@ class TestShowdown(TestCase):
         self.assertEqual([players[0]], s.winners)
         self.assertEqual([6, 6, 6, 6, 14, 14], s.rank)
 
+    def test_find_winners6(self):
+        # Test if method accurately finds the winning player + hand from
+        # 2 inputs
+        gen = [Card(14, 1), Card(13, 2), Card(14, 4), Card(13, 4), Card(5, 1),
+               Card(6, 4), Card(2, 2), Card(7, 1), Card(10, 3)]
+        players = [Player([gen[0], gen[1]]), Player([gen[2], gen[3]])]
+        board = gen[4:]
+        s = Showdown(players, board)
+        s.find_winners()
+        self.assertEqual([players[0], players[1]], s.winners)
+        self.assertEqual([0, 14, 13, 10, 7, 6], s.rank)
+
+    def test_find_winners7(self):
+        # Test if method accurately finds the winning player + hand from
+        # 2 inputs
+        gen = [Card(14, 1), Card(13, 2), Card(12, 4), Card(12, 3), Card(12, 1),
+               Card(6, 4), Card(6, 2), Card(5, 1), Card(8, 3)]
+        players = [Player([gen[0], gen[1]]), Player([gen[2], gen[3]])]
+        board = gen[4:]
+        s = Showdown(players, board)
+        s.find_winners()
+        self.assertEqual([players[1]], s.winners)
+        self.assertEqual([6, 12, 12, 12, 6, 6], s.rank)
+
 if __name__ == '__main__':
     unittest.main()
