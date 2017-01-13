@@ -26,8 +26,10 @@ class Simulator(object):
     # Add Dead-Card optional variable that allows users to input 0-5 cards
     def generate_random_showdown(self, players):
         dead_cards = [card for player in players for card in player.cards]
-        winner_tally = [0] * len(players)
-        simulations = 1000000
+        num_players = len(players)
+        winner_tally = [0] * num_players
+        split_tally = [0] * num_players
+        simulations = 100000
         deck = []
         # Generates entire deck
         for val in range(2, 15):
@@ -46,9 +48,11 @@ class Simulator(object):
             # print([card.value for winner in
             #        s.winners for card in winner.cards ])
             # print([(card.value, card.suit) for card in board])
-            for winner in s.winners:
-                winner_tally[players.index(winner)] += 1
-        split = (sum(winner_tally) - simulations)/len(winner_tally)
-        winner_tally = [(winner_tally[i] - split)/simulations for i in range(len(
-            winner_tally))]
+            if len(s.winners) == 1:
+                winner_tally[players.index(s.winners[0])] += 1
+            else:
+                dividend = len(s.winners)
+                for winner in s.winners:
+                    split_tally[players.index(winner)] += 1/dividend
+        winner_tally = [(winner_tally[i] + split_tally[i])/simulations for i in range(num_players)]
         return winner_tally
